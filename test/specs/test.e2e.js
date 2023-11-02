@@ -71,9 +71,25 @@ describe('My Login application', () => {
 
         await acs1.click();
         await browser.pause(2000);
-    //     const drop= await $('#products-orderby');
-    //     await drop.selectByIndex(0);
-    //     expect()   
+        const sortby= await $('#products-orderby');
+        // await browser.click(');
+        await sortby.selectByVisibleText('Price: Low to High');
+        await browser.pause(2000);
+        const prices = await browser.execute(() => {
+            const elements = document.querySelectorAll('.prices .price');
+            return Array.from(elements).map((element) => parseFloat(element.textContent.replace('$', '')));
+          });
+        const sortedPrices = await prices.slice().sort(function compareNumbers(a, b) {
+            return a - b;
+          })
+        expect(prices).toStrictEqual(sortedPrices);
+        await sortby.selectByVisibleText('Name: A to Z');
+         const names = await browser.execute(() => {
+                const elements = document.querySelectorAll('.product-item .product-title');
+                return Array.from(elements).map((element) => element.textContent);
+             });
+        const sortName=  names.slice().sort();
+        expect(names).toStrictEqual(sortName);
 
     })
       it(`Verify that allows changing number of items on page`,async()=>{
